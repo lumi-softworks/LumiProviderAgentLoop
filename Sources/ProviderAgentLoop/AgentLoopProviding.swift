@@ -22,6 +22,11 @@ public protocol AgentLoopProviding: AnyObject {
     func runTurn(in conversationID: UUID) async throws -> AgentLoopOutcome
     func resumeTurn(in conversationID: UUID, request: AgentTurnResumeRequest) async throws -> AgentLoopOutcome
     func cancelTurn(in conversationID: UUID)
+    /// 取消运行中或挂起的回合，并在该回合的任务完成清理后才返回。
+    ///
+    /// `cancelTurn(in:)` 是同步的，返回时任务可能仍在收尾并继续写入消息；
+    /// 需要在取消后立刻改写时间线的调用方（例如编辑并重发用户消息）必须用这个接口。
+    func cancelTurnAndWait(in conversationID: UUID) async
     func state(for conversationID: UUID) -> AgentLoopState
     /// 当前（或最近一次）暂停的详情；无暂停时返回 `nil`。
     func suspension(for conversationID: UUID) -> AgentLoopSuspension?
