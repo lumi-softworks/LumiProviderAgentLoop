@@ -48,6 +48,12 @@ public extension AgentLoopProviding {
         false
     }
 
+    /// 默认只做同步取消：旧实现和测试桩没有可等待的任务句柄。
+    func cancelTurnAndWait(in conversationID: UUID) async {
+        cancelTurn(in: conversationID)
+        await Task.yield()
+    }
+
     /// 默认无操作（保持既有行为）。
     func setAutoReplySuppressed(_ suppressed: Bool, for conversationID: UUID) {}
 
